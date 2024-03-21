@@ -16,14 +16,20 @@ jobs:
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Build and Push Docker images for services
+      - name: Build and Push Docker images for order-service
         run: |
           TAG=$(echo "${{ github.ref }}" | cut -d'/' -f3)
-          
-          # Build and push order-service image
           docker build -t clementbreg/order-service:$TAG ./path/to/order-service
           docker push clementbreg/order-service:$TAG
 
-          # Build and push front-end-react image
+      - name: Build and Push Docker images for user-service
+        run: |
+          TAG=$(echo "${{ github.ref }}" | cut -d'/' -f3)
+          docker build -t clementbreg/user-service:$TAG ./path/to/user-service
+          docker push clementbreg/user-service:$TAG
+
+      - name: Build and Push Docker images for front-end-react
+        run: |
+          TAG=$(echo "${{ github.ref }}" | cut -d'/' -f3)
           docker build -t clementbreg/front-end-react:$TAG ./front-end-react
           docker push clementbreg/front-end-react:$TAG
