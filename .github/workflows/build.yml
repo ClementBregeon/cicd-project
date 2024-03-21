@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build and Push Docker Images
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main  # Déclencher sur la branche main
 
 jobs:
-  build:
+  build_and_push:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,8 +16,20 @@ jobs:
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Build Docker image
+      - name: Build Docker image for front-end-react
         run: docker build -t clementbreg/front-end-react:${{ github.sha }} ./front-end-react
 
-      - name: Push Docker image to DockerHub
+      - name: Push Docker image for front-end-react to DockerHub
         run: docker push clementbreg/front-end-react:${{ github.sha }}
+
+      - name: Build Docker image for order-service
+        run: docker build -t clementbreg/order-service:${{ github.sha }} ./order-service
+
+      - name: Push Docker image for order-service to DockerHub
+        run: docker push clementbreg/order-service:${{ github.sha }}
+
+      - name: Build Docker image for user-service
+        run: docker build -t clementbreg/user-service:${{ github.sha }} ./user-service
+
+      - name: Push Docker image for user-service to DockerHub
+        run: docker push clementbreg/user-service:${{ github.sha }}
