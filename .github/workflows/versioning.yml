@@ -1,4 +1,4 @@
-name: Versioning Pipeline
+name: Multi-Service Versioning Pipeline
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - 'release-*'  # Déclencher pour toutes les branches commençant par "release-"
 
 jobs:
-  build_and_push:
+  build_and_push_services:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,12 +16,14 @@ jobs:
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Build Docker image with version tag
+      - name: Build and Push Docker images for services
         run: |
           TAG=$(echo "${{ github.ref }}" | cut -d'/' -f3)
-          docker build -t clementbreg/user-service:$TAG ./path/to/user-service
+          
+          # Build and push order-service image
+          docker build -t clementbreg/order-service:$TAG ./path/to/order-service
+          docker push clementbreg/order-service:$TAG
 
-      - name: Push Docker image with version tag to DockerHub
-        run: |
-          TAG=$(echo "${{ github.ref }}" | cut -d'/' -f3)
-          docker push clementbreg/user-service:$TAG
+          # Build and push front-end-react image
+          docker build -t clementbreg/front-end-react:$TAG ./front-end-react
+          docker push clementbreg/front-end-react:$TAG
