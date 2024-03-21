@@ -5,7 +5,8 @@ on:
     branches:
       - main  # Déclencher sur la branche main
 
-jobs:  build:
+jobs:
+  build:
     runs-on: ubuntu-latest
 
     steps:
