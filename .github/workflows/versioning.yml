@@ -1,0 +1,27 @@
+name: Versioning Pipeline
+
+on:
+  push:
+    branches:
+      - 'release-*'  # Déclencher pour toutes les branches commençant par "release-"
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build Docker image with version tag
+        run: |
+          TAG=$(echo "${{ github.ref }}" | cut -d'/' -f3)
+          docker build -t clementbreg/user-service:$TAG ./path/to/user-service
+
+      - name: Push Docker image with version tag to DockerHub
+        run: |
+          TAG=$(echo "${{ github.ref }}" | cut -d'/' -f3)
+          docker push clementbreg/user-service:$TAG
