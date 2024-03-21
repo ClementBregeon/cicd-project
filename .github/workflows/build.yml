@@ -17,7 +17,7 @@ jobs:
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       - name: Build Docker image
-        run: docker build -t clementbreg/front-end-react:${{ github.sha }} .
+        run: docker build -t clementbreg/front-end-react:${{ github.sha }} ./front-end-react
 
       - name: Push Docker image to DockerHub
         run: docker push clementbreg/front-end-react:${{ github.sha }}
